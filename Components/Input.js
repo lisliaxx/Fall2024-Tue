@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { TextInput, StyleSheet, View } from 'react-native';
+import { TextInput, StyleSheet, View, Text } from 'react-native';
 
 export default function Input({ autoFocus }) {
   const [text, setText] = useState('');
@@ -16,6 +16,7 @@ export default function Input({ autoFocus }) {
   };
 
   return (
+    <View>
       <TextInput
         ref={inputRef}
         placeholder='Type Something'
@@ -25,6 +26,11 @@ export default function Input({ autoFocus }) {
         style={styles.input}
         onChangeText={updateText}
       />
+      {text.length > 0 && 
+      <Text>
+        Character Count: {text.length}
+      </Text>}
+    </View>
   );
 }
 
