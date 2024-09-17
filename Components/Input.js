@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { TextInput, StyleSheet, View, Text, Button } from 'react-native';
 
-export default function Input({ autoFocus }) {
+export default function Input({ autoFocus, onFocus, inputHandler }) {
   const [text, setText] = useState('');
   const [isBlurred, setIsBlurred] = useState(false);
   const handleConfirm = () => {
-    console.log("User input: ", text);
+    // console.log("User input: ", text);
+    inputHandler(text);
   };
 
   const inputRef = useRef(null);
