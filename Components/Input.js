@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { TextInput, StyleSheet, View, Text, Button } from 'react-native';
+import { TextInput, StyleSheet, View, Text, Button, Modal } from 'react-native';
 
-export default function Input({ autoFocus, onFocus, inputHandler }) {
+export default function Input({ autoFocus, onFocus, inputHandler, modleVisible }) {
   const [text, setText] = useState('');
   const [isBlurred, setIsBlurred] = useState(false);
   const handleConfirm = () => {
@@ -27,7 +27,10 @@ export default function Input({ autoFocus, onFocus, inputHandler }) {
   }
 
   return (
-    <View>
+  <Modal 
+  visible={modleVisible}
+  animationType='slide'>
+    <View style={styles.container}>
       <TextInput
         ref={inputRef}
         placeholder='Type Something'
@@ -54,13 +57,16 @@ export default function Input({ autoFocus, onFocus, inputHandler }) {
 
       <Button title='Confirm' onPress={handleConfirm} />
     </View>
+  </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    margin: 20,
-    width: '80%',
+    flex: 1,
+    backgroundColor: 'red',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   input: {
     borderBottomColor: 'black',
