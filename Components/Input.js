@@ -1,9 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { TextInput, StyleSheet, View, Text } from 'react-native';
+import { TextInput, StyleSheet, View, Text, Button } from 'react-native';
 
 export default function Input({ autoFocus }) {
   const [text, setText] = useState('');
   const [isBlurred, setIsBlurred] = useState(false);
+  const handleConfirm = () => {
+    console.log("User input: ", text);
+  };
+
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -32,6 +36,8 @@ export default function Input({ autoFocus }) {
         style={styles.input}
         onChangeText={updateText}
         onBlur={handleBlur}
+        // changed for week3 onfocus
+        onFocus={() => setIsBlurred(false)}
       />
 
       {!isBlurred && text.length > 0 && 
@@ -44,6 +50,8 @@ export default function Input({ autoFocus }) {
         {text.length >= 3 ? 'Thank you' : 'Please type more than 3 characters'}
         </Text>
       )}
+
+      <Button title='Confirm' onPress={handleConfirm} />
     </View>
   );
 }
