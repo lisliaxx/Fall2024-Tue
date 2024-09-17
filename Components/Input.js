@@ -64,12 +64,15 @@ export default function Input({ autoFocus, onFocus, inputHandler, modleVisible }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'red',
+    backgroundColor: 'pink',
     alignItems: 'center',
     justifyContent: 'center',
   },
   input: {
+    fontSize: 15,
     borderBottomColor: 'black',
-    borderBottomWidth: 2,
+    borderWidth: 2,
+    padding: 5,
+    marginBottom: 10,
   },
 });
