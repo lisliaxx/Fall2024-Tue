@@ -8,11 +8,17 @@ export default function App() {
   const [text , setText] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const appName = "My App!";
-function handleInputData (data) {
-  console.log("App.js", data);
-  setText(data);
-  setModalVisible(false);
-}
+
+  function handleInputData(data) {
+    console.log("App.js", data);
+    setText(data);
+    setModalVisible(false); 
+  }
+
+  function handleCancel() {
+    console.log("User cancelled input");
+    setModalVisible(false); 
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -20,14 +26,19 @@ function handleInputData (data) {
 
       <View style={styles.topView}>
         <Header name={appName} />
-        <Button style={styles.button}
-        title='Add a Goal' onPress={() => setModalVisible(true)} />
+        <Button
+          style={styles.button}
+          title='Add a Goal'
+          onPress={() => setModalVisible(true)} 
+        />
       </View>
 
       <Input 
         autoFocus={true} 
         inputHandler={handleInputData} 
-        modleVisible={modalVisible}/>
+        cancelHandler={handleCancel}  
+        modalVisible={modalVisible} 
+      />
       
       <View style={styles.bottomView}>
         <Text style={styles.text}>{text}</Text>
@@ -44,6 +55,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     justifyContent: 'center',
   },
+
   text: {
     fontSize: 15,
     color: 'green',
