@@ -72,6 +72,8 @@ export default function App() {
           renderItem={({ item }) => {
             return <GoalItem deleteHandler={handleDelete}item={item} />;
           }}
+
+          ListEmptyComponent={() => <Text style={styles.noGoalsText}>No goals to show</Text>}
         />
       </View>
     
@@ -86,7 +88,12 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     justifyContent: 'center',
   },
-
+  noGoalsText: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginVertical: 10,
+    color: 'blue',
+  },
 
   topView: {
     flex: 1,
