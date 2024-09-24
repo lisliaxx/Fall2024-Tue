@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Button, SafeAreaView, ScrollView, FlatList } fr
 import React, { useState } from 'react';
 import Header from './Components/Header';
 import Input from './Components/Input'; 
+import GoalItem from './Components/GoalItem';
 
 export default function App() {
   const [text , setText] = useState('');
@@ -62,11 +63,7 @@ export default function App() {
         <FlatList contentContainerStyle={styles.scrollView}
           data={goals}
           renderItem={({ item }) => {
-            return (
-              <View key={item.id} style={styles.textContainer}>
-                <Text style={styles.text}>{item.text}</Text>
-              </View>
-            );
+            return <GoalItem item={item} />;
           }}
         />
       </View>
@@ -83,12 +80,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  text: {
-    fontSize: 30,
-    color: 'green',
-    padding: 5,
-    margin: 5,
-  },
 
   topView: {
     flex: 1,
@@ -103,12 +94,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 20,
     backgroundColor: 'pink',
-  },
-
-  textContainer: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-    marginTop: 50,
   },
 
   scrollView: {
