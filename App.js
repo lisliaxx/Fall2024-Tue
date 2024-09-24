@@ -41,7 +41,9 @@ export default function App() {
       />
       
       <View style={styles.bottomView}>
-        <Text style={styles.text}>{text}</Text>
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>{text}</Text>
+        </View>
       </View>
     
     </SafeAreaView>
@@ -60,6 +62,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'green',
     padding: 5,
+    borderRadius: 5,
   },
 
   topView: {
@@ -76,5 +79,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 20,
     backgroundColor: 'pink',
+  },
+
+  textContainer: {
+    backgroundColor: 'pink',
+    borderRadius: 5,
   },
 });
