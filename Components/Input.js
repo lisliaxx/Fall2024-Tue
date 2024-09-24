@@ -47,49 +47,53 @@ export default function Input({ autoFocus, inputHandler, modalVisible, cancelHan
   return (
     <Modal 
       visible={modalVisible}
+      transparent={true}
       animationType='slide'>
 
       <View style={styles.container}>
-        <Image 
-          source={{uri: 'https://cdn-icons-png.flaticon.com/512/2617/2617812.png'}}
-          style={styles.image}
-          alt="Network image"
-        />
+        <View style={styles.modalContainer}>
+          <Image 
+            source={{uri: 'https://cdn-icons-png.flaticon.com/512/2617/2617812.png'}}
+            style={styles.image}
+            alt="Network image"
+          />
 
-        <Image 
-          source={require('../Images/Image.png')}
-          style={styles.image}
-          alt="Local image"
-        />
 
-        <TextInput
-          ref={inputRef}
-          placeholder='Type Something'
-          autoCorrect={true}
-          keyboardType='default'
-          value={text}
-          style={styles.input}
-          onChangeText={updateText}
-          onBlur={handleBlur}
-          // changed for week3 onfocus
-          onFocus={() => setIsBlurred(false)}
-        />
+          <Image 
+            source={require('../Images/Image.png')}
+            style={styles.image}
+            alt="Local image"
+          />
 
-        {!isBlurred && text.length > 0 && 
-        <Text>
-          Character Count: {text.length}
-        </Text>}
+          <TextInput
+            ref={inputRef}
+            placeholder='Type Something'
+            autoCorrect={true}
+            keyboardType='default'
+            value={text}
+            style={styles.input}
+            onChangeText={updateText}
+            onBlur={handleBlur}
+            // changed for week3 onfocus
+            onFocus={() => setIsBlurred(false)}
+          />
 
-        {isBlurred && (
+          {!isBlurred && text.length > 0 && 
           <Text>
-          {text.length >= 3 ? 'Thank you' : 'Please type more than 3 characters'}
-          </Text>
-        )}
+            Character Count: {text.length}
+          </Text>}
+
+          {isBlurred && (
+            <Text>
+            {text.length >= 3 ? 'Thank you' : 'Please type more than 3 characters'}
+            </Text>
+          )}
 
 
-        <View style={styles.buttonContainer}>
-          <Button title='Confirm' onPress={handleConfirm} disabled={isConfirmedDisabled} />
-          <Button title='Cancel' onPress={handleCancel}/>
+          <View style={styles.buttonContainer}>
+            <Button title='Confirm' onPress={handleConfirm} disabled={isConfirmedDisabled} />
+            <Button title='Cancel' onPress={handleCancel}/>
+          </View>
         </View>
       </View>
     </Modal>
@@ -102,6 +106,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'pink',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  modalContainer:{
+    borderRadius: 6,
+    backgroundColor: '#999',
+    alignItems: 'center',
   },
   input: {
     fontSize: 15,
