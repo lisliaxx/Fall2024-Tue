@@ -74,6 +74,8 @@ export default function App() {
           }}
 
           ListEmptyComponent={() => <Text style={styles.noGoalsText}>No goals to show</Text>}
+
+          ListHeaderComponent={() => goals.length > 0 && <Text style={styles.headerText}>My Goals</Text>}
         />
       </View>
     
@@ -91,6 +93,14 @@ const styles = StyleSheet.create({
   noGoalsText: {
     fontSize: 20,
     textAlign: 'center',
+    marginVertical: 10,
+    color: 'blue',
+  },
+
+  headerText: {
+    fontSize: 22,
+    textAlign: 'center',
+    fontWeight: 'bold',
     marginVertical: 10,
     color: 'blue',
   },
