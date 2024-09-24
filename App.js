@@ -84,5 +84,6 @@ const styles = StyleSheet.create({
   textContainer: {
     backgroundColor: 'pink',
     borderRadius: 5,
+    marginTop: 5,
   },
 });
