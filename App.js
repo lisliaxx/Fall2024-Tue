@@ -1,23 +1,39 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text, Button, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Text, Button, SafeAreaView, ScrollView, FlatList } from 'react-native';
 import React, { useState } from 'react';
 import Header from './Components/Header';
 import Input from './Components/Input'; 
+import GoalItem from './Components/GoalItem';
 
 export default function App() {
   const [text , setText] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [goals, setGoals] = useState([]);
   const appName = "My App!";
 
   function handleInputData(data) {
     console.log("App.js", data);
-    setText(data);
+    let newGoal = {
+      text: data, id:Math.random()
+    };
+    const newGoals = [...goals, newGoal];
+    console.log(newGoals);
+    // setText(data);
+    setGoals((prevGoals) => {
+      return [...prevGoals, newGoal]});
     setModalVisible(false); 
   }
 
   function handleCancel() {
     console.log("User cancelled input");
     setModalVisible(false); 
+  }
+
+  function handleDelete(id) {
+    console.log("Delete button pressed", id);
+    setGoals((prevGoals) => {
+      return prevGoals.filter((goal) => goal.id !== id);
+    });
   }
 
   return (
@@ -39,9 +55,24 @@ export default function App() {
         cancelHandler={handleCancel}  
         modalVisible={modalVisible} 
       />
-      
+
       <View style={styles.bottomView}>
-        <Text style={styles.text}>{text}</Text>
+        {/* <ScrollView contentContainerStyle={styles.scrollView}>
+          {goals.map((goalObject) => {
+            return (
+              <View key={goalObject.id} style={styles.textContainer}>
+                <Text style={styles.text}>{goalObject.text}</Text>
+              </View>
+            );
+          })}
+        </ScrollView> */}
+
+        <FlatList contentContainerStyle={styles.scrollView}
+          data={goals}
+          renderItem={({ item }) => {
+            return <GoalItem deleteHandler={handleDelete}item={item} />;
+          }}
+        />
       </View>
     
     </SafeAreaView>
@@ -56,11 +87,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  text: {
-    fontSize: 15,
-    color: 'green',
-    padding: 5,
-  },
 
   topView: {
     flex: 1,
@@ -71,10 +97,15 @@ const styles = StyleSheet.create({
   },
 
   bottomView: {
-    alignItems: 'center',
     flex: 4,
     marginTop: 20,
     padding: 20,
     backgroundColor: 'pink',
+  },
+
+  scrollView: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
