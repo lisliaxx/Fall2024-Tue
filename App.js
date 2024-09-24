@@ -7,11 +7,19 @@ import Input from './Components/Input';
 export default function App() {
   const [text , setText] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [goals, setGoals] = useState([]);
   const appName = "My App!";
 
   function handleInputData(data) {
     console.log("App.js", data);
-    setText(data);
+    let newGoal = {
+      text: data, id:Math.random()
+    };
+    const newGoals = [...goals, newGoal];
+    console.log(newGoals);
+    // setText(data);
+    setGoals((prevGoals) => {
+      return [...prevGoals, newGoal]});
     setModalVisible(false); 
   }
 
@@ -41,9 +49,13 @@ export default function App() {
       />
       
       <View style={styles.bottomView}>
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>{text}</Text>
-        </View>
+      {goals.map((goalObject) => {
+        return (
+          <View key={goalObject.id} style={styles.textContainer}>
+            <Text style={styles.text}>{goalObject.text}</Text>
+          </View>
+        );
+      })}
       </View>
     
     </SafeAreaView>
