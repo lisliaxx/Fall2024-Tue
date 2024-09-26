@@ -19,13 +19,13 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 30,
         color: 'green',
-        padding: 5,
+        padding: 10,
       },
       textContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: 'white',
         borderRadius: 5,
-        marginTop: 50,
+        marginTop: 15,
       },
     });

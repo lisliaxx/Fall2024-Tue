@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text, Button, SafeAreaView, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, View, Text, Button, SafeAreaView, ScrollView, FlatList, Alert } from 'react-native';
 import React, { useState } from 'react';
 import Header from './Components/Header';
 import Input from './Components/Input'; 
@@ -36,6 +36,19 @@ export default function App() {
     });
   }
 
+  function handleDeleteAll() {
+    Alert.alert(
+      "Delete All",
+      "Are you sure you want to delete all goals?",
+      [
+        { text: "No", onPress: () => console.log("Cancel Pressed") },
+        { text: "Yes", onPress: () => setGoals([]) }
+      ]
+    );
+  }
+
+
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
@@ -67,11 +80,19 @@ export default function App() {
           })}
         </ScrollView> */}
 
-        <FlatList contentContainerStyle={styles.scrollView}
+        <FlatList
           data={goals}
           renderItem={({ item }) => {
             return <GoalItem deleteHandler={handleDelete}item={item} />;
           }}
+
+          ListEmptyComponent={() => <Text style={styles.noGoalsText}>No goals to show</Text>}
+
+          ListHeaderComponent={() => goals.length > 0 && <Text style={styles.headerText}>My Goals</Text>}
+
+          ListFooterComponent={() => goals.length > 0 && (<Button title="Delete All" onPress={handleDeleteAll} />)}
+
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       </View>
     
@@ -86,7 +107,28 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     justifyContent: 'center',
   },
+  noGoalsText: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginVertical: 10,
+    color: 'blue',
+  },
 
+  headerText: {
+    fontSize: 22,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginVertical: 10,
+    color: 'blue',
+  },
+
+  separator: {
+    height: 3,
+    width: "100%",
+    backgroundColor: "blue",
+    marginVertical: 20,
+
+  },
 
   topView: {
     flex: 1,
@@ -99,13 +141,13 @@ const styles = StyleSheet.create({
   bottomView: {
     flex: 4,
     marginTop: 20,
-    padding: 20,
     backgroundColor: 'pink',
+    width: '100%',
+    alignItems: 'center',
   },
 
   scrollView: {
     alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   },
 });
