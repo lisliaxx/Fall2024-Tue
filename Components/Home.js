@@ -36,9 +36,9 @@ export default function Home( {navigation}) {
     });
   }
 
-  function handleGoalPress(id) {
-    console.log("Details button pressed", id);
-    navigation.navigate('GoalDetails', {id});
+  function handleGoalPress(goalItem) {
+    console.log("Details button pressed", goalItem.id);
+    navigation.navigate('GoalDetails', {goalItem});
     }
 
   function handleDeleteAll() {
