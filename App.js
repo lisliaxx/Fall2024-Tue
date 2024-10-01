@@ -12,19 +12,21 @@ console.log(Stack);
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#80d195',
+          },
+          headerTintColor: 'white',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}>
         <Stack.Screen 
           name="Home" 
           component={Home} 
           options={{ 
             title : "My Goals",
-            headerStyle: {
-              backgroundColor: '#80d195',
-            },
-            headerTintColor: 'white',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
           }}
         />
         <Stack.Screen 
