@@ -89,7 +89,7 @@ export default function Home( {navigation}) {
           data={goals}
           renderItem={({ item }) => {
             return (
-            <GoalItem deleteHandler={handleDelete}item={item} pressHandler={handleGoalPress} />
+            <GoalItem deleteHandler={handleDelete}item={item} />
 
             )
 
