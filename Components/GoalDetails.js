@@ -3,9 +3,10 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 
 export default function GoalDetails(route, navigation) {
 
+
     const { goalItem } = route.route.params;
-    function moreDetailsHandler () {
-      navigation.navigate("GoalDetails")
+    function moreDetailsHandler() {
+      console.log("More details button pressed", goalItem.id);
     }
   return (
     <View>

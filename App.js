@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, Button} from 'react-native';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -27,7 +27,19 @@ export default function App() {
             },
           }}
         />
-        <Stack.Screen name="GoalDetails" component={GoalDetails} />
+        <Stack.Screen 
+          name="GoalDetails" 
+          component={GoalDetails} 
+          options={({route}) => {return {
+            title: route.params ? route.params.goalItem.text : "More Details",
+            headerRight: () => {
+              return <Button title="Warning"
+              onPress ={() => {console.log("Warning");}}  
+              />
+            },
+          };
+          }}
+          />
       </Stack.Navigator>
     </NavigationContainer>
   );
