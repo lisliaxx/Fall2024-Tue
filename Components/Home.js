@@ -5,7 +5,7 @@ import Header from './Header';
 import Input from './Input';
 import GoalItem from './GoalItem';
 
-export default function Home() {
+export default function Home( {navigation}) {
   const [text , setText] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [goals, setGoals] = useState([]);
@@ -35,6 +35,11 @@ export default function Home() {
       return prevGoals.filter((goal) => goal.id !== id);
     });
   }
+
+  function handleGoalPress(id) {
+    console.log("Details button pressed", id);
+    navigation.navigate('GoalDetails', {id});
+    }
 
   function handleDeleteAll() {
     Alert.alert(
@@ -83,7 +88,11 @@ export default function Home() {
         <FlatList
           data={goals}
           renderItem={({ item }) => {
-            return <GoalItem deleteHandler={handleDelete}item={item} />;
+            return (
+            <GoalItem deleteHandler={handleDelete}item={item} pressHandler={handleGoalPress} />
+
+            )
+
           }}
 
           ListEmptyComponent={() => <Text style={styles.noGoalsText}>No goals to show</Text>}
