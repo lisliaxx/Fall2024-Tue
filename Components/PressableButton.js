@@ -1,5 +1,6 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import React from "react";
+
 
 export default function PressableButton({children, componentStyle, pressHandler, pressedStyle}) {
     return (
@@ -20,7 +21,7 @@ export default function PressableButton({children, componentStyle, pressHandler,
 
 const styles = StyleSheet.create({
     defaultStyle : {
-        padding: 10,
+        padding: 5,
         margin: 10,
         backgroundColor: 'beige',
         borderRadius: 5,
