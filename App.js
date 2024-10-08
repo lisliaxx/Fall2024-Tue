@@ -12,33 +12,29 @@ console.log(Stack);
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#80d195',
+          },
+          headerTintColor: 'white',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}>
         <Stack.Screen 
           name="Home" 
           component={Home} 
           options={{ 
             title : "My Goals",
-            headerStyle: {
-              backgroundColor: '#80d195',
-            },
-            headerTintColor: 'white',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
           }}
         />
         <Stack.Screen 
           name="GoalDetails" 
           component={GoalDetails} 
-          options={({route}) => {return {
-            title: route.params ? route.params.goalItem.text : "More Details",
-            headerRight: () => {
-              return <Button title="Warning"
-              onPress ={() => {console.log("Warning");}}  
-              />
-            },
-          };
-          }}
+          options={({route}) => ({
+            title: route.params?.goalItem?.txt || "Goal Details",
+          })}
           />
       </Stack.Navigator>
     </NavigationContainer>

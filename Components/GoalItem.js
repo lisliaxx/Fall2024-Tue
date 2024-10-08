@@ -1,7 +1,9 @@
 import { Button, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { useNavigation } from '@react-navigation/native';
 
-export default function GoalItem({item, deleteHandler, pressHandler}) {
+export default function GoalItem({item, deleteHandler}) {
+    const navigation = useNavigation();
 
     function handleDelete() {
         console.log("Delete button pressed", item.id);
@@ -9,7 +11,8 @@ export default function GoalItem({item, deleteHandler, pressHandler}) {
       }
 
     function handlePress() {
-      pressHandler(item);
+      console.log("Navigate to GoalDetails", item);
+      navigation.navigate('GoalDetails', {goalItem: item});
     }
 
     return (
