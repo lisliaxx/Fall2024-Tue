@@ -1,10 +1,10 @@
-import { Button, StyleSheet, Text, View, Pressable } from "react-native";
+import { Button, StyleSheet, Text, View, Pressable, Alert } from "react-native";
 import React from "react";
 import { useNavigation } from '@react-navigation/native';
 import PressableButton from "./PressableButton";
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-export default function GoalItem({item, deleteHandler}) {
+export default function GoalItem({item, deleteHandler, onPressIn, onPressOut}) {
     const navigation = useNavigation();
 
     function handleDelete() {
@@ -17,10 +17,25 @@ export default function GoalItem({item, deleteHandler}) {
         navigation.navigate('GoalDetails', {goalItem: item});
     }
 
+    function handleLongPress() {
+      Alert.alert(
+          "Delete Goal",
+          "Are you sure you want to delete this goal?",
+          [
+              { text: "No", style: "cancel" },
+              { text: "Yes", onPress: () => deleteHandler(item.id), style: "destructive" }
+          ]
+      );
+  }
+
     return (
         <View key={item.id} style={styles.textContainer}>
             <Pressable 
                 onPress={handlePress} 
+                onLongPress={handleLongPress}
+                onPressIn={onPressIn}
+                onPressOut={onPressOut}
+                delayLongPress={500}
                 style={({pressed}) => [
                     styles.horizontalContainer, 
                     pressed && styles.pressableStyle
