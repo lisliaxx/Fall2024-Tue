@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import Header from './Header';
 import Input from './Input';
 import GoalItem from './GoalItem';
+import PressableButton from './PressableButton';
+
 
 export default function Home( {navigation}) {
   const [text , setText] = useState('');
@@ -60,11 +62,18 @@ export default function Home( {navigation}) {
 
       <View style={styles.topView}>
         <Header name={appName} />
-        <Button
+        <PressableButton pressHandler={function () {
+          setModalVisible(true);
+        }}
+        componentStyle={{backgroundColor: 'purple', padding: 10, borderRadius: 5}}
+        >
+          <Text style={styles.buttonText}>Add a Goal</Text>
+        </PressableButton>
+        {/* <Button
           style={styles.button}
           title='Add a Goal'
           onPress={() => setModalVisible(true)} 
-        />
+        /> */}
       </View>
 
       <Input 
@@ -158,5 +167,9 @@ const styles = StyleSheet.create({
   scrollView: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 20,
   },
 });

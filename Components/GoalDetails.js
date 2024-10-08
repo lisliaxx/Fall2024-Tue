@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
+import PressableButton from './PressableButton';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function GoalDetails({ route, navigation }) {
   const { goalItem, isMoreDetails } = route.params || {};
@@ -8,11 +10,18 @@ export default function GoalDetails({ route, navigation }) {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Button
-          onPress={() => setIsWarning(!isWarning)}
-          title={isWarning ? "Reset" : "Warning"}
-          color={isWarning ? "red" : "black"}
-        />
+        <PressableButton
+          componentStyle={styles.button}
+          pressHandler={() => setIsWarning(!isWarning)}
+          pressedStyle={styles.buttonPressed}
+        >
+          <AntDesign name="warning" size={16} color="black" />
+        </PressableButton>
+        // <Button
+        //   onPress={() => setIsWarning(!isWarning)}
+        //   title={isWarning ? "Reset" : "Warning"}
+        //   color={isWarning ? "red" : "black"}
+        // />
       ),
     });
   }, [navigation, isWarning]);
