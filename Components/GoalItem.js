@@ -26,7 +26,14 @@ export default function GoalItem({item, deleteHandler}) {
                 android_ripple={{color:'red', radius:25}}
             >
                 <Text style={styles.text}>{item.text}</Text>
-                <Button title="X" onPress={handleDelete} />
+                {/* <Button title="X" onPress={handleDelete} /> */}
+                <PressableButton 
+                  componentStyle={styles.deleteButton} 
+                  pressHandler={handleDelete}
+                  pressedStyle={styles.pressableStyle}
+                  >
+                    <Text style={styles.deleteText}>X</Text>
+                </PressableButton>
             </Pressable>
         </View>
     );
@@ -53,4 +60,13 @@ const styles = StyleSheet.create({
         opacity: 0.5,
         backgroundColor: 'red',
     },
+    deleteButton: {
+        backgroundColor: 'red',
+        color: 'white',
+        padding: 10,
+        borderRadius: 5,
+    },
+    deleteText: {
+        color: 'white',
+    },  
 });
