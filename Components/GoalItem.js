@@ -1,6 +1,7 @@
 import { Button, StyleSheet, Text, View, Pressable } from "react-native";
 import React from "react";
 import { useNavigation } from '@react-navigation/native';
+import PressableButton from "./PressableButton";
 
 export default function GoalItem({item, deleteHandler}) {
     const navigation = useNavigation();

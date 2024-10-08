@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     defaultStyle : {
         padding: 10,
         margin: 10,
-        backgroundColor: 'red',
+        backgroundColor: 'beige',
         borderRadius: 5,
     },
     pressedStyle: {
@@ -30,5 +30,6 @@ const styles = StyleSheet.create({
     },
     defaultPressedStyle: {
         backgroundColor: 'blue',
+        opacity: 0.2,
     },
 });
