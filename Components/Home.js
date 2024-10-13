@@ -96,9 +96,14 @@ export default function Home( {navigation}) {
 
         <FlatList
           data={goals}
-          renderItem={({ item }) => {
+          renderItem={({ item, index, separators }) => {
             return (
-            <GoalItem deleteHandler={handleDelete}item={item} />
+            <GoalItem 
+              deleteHandler={handleDelete}
+              item={item}
+              onPressIn= {() => separators.highlight()}
+              onPressOut= {() => separators.unhighlight()}
+               />
 
             )
 
@@ -110,7 +115,12 @@ export default function Home( {navigation}) {
 
           ListFooterComponent={() => goals.length > 0 && (<Button title="Delete All" onPress={handleDeleteAll} />)}
 
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ItemSeparatorComponent={({highlighted}) => (
+            <View style={[
+              styles.separator, 
+              highlighted && { backgroundColor:'#2d95fc' }
+              ]} />
+              )}
         />
       </View>
     
