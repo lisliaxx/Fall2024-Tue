@@ -18,16 +18,18 @@ export default function Home( {navigation}) {
   const appName = "My App!";
 
   useEffect(() => {
-  onSnapshot(collection(database, 'goals'), (querySnapshot) => {
-    let newArray = [];
-    querySnapshot.forEach((docSnapshot) => {
-      console.log(docSnapshot.id);
-      newArray.push({...docSnapshot.data(), id: docSnapshot.id});
+    const unsubscribe = onSnapshot(collection(database, 'goals'), (querySnapshot) => {
+      let newArray = [];
+      querySnapshot.forEach((docSnapshot) => {
+        console.log(docSnapshot.id);
+        newArray.push({...docSnapshot.data(), id: docSnapshot.id});
+      });
+      console.log(newArray);
+      setGoals(newArray);
     });
-    console.log(newArray);
-    setGoals(newArray);
-  });
- }, []);
+    return () => unsubscribe();
+  }, []);
+
 
   function handleInputData(data) {
     console.log("App.js", data);
