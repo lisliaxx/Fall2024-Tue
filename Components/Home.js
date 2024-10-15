@@ -6,7 +6,7 @@ import Input from './Input';
 import GoalItem from './GoalItem';
 import PressableButton from './PressableButton';
 import {database} from '../Firebase/firebaseSetup'; 
-import { writeToDB } from '../Firebase/firestoreHelper';
+import { writeToDB, deleteDocFromDB } from '../Firebase/firestoreHelper';
 import { onSnapshot, collection } from 'firebase/firestore';
 
 
@@ -48,11 +48,8 @@ export default function Home( {navigation}) {
     setModalVisible(false); 
   }
 
-  function handleDelete(id) {
-    console.log("Delete button pressed", id);
-    setGoals((prevGoals) => {
-      return prevGoals.filter((goal) => goal.id !== id);
-    });
+  async function handleDelete(docId) {
+    deleteDocFromDB(docId, 'goals');
   }
 
   function handleGoalPress(goalItem) {
