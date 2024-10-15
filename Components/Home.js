@@ -6,7 +6,7 @@ import Input from './Input';
 import GoalItem from './GoalItem';
 import PressableButton from './PressableButton';
 import {database} from '../Firebase/firebaseSetup'; 
-import { writeToDB, deleteDocFromDB } from '../Firebase/firestoreHelper';
+import { writeToDB, deleteDocFromDB, deleteAll } from '../Firebase/firestoreHelper';
 import { onSnapshot, collection } from 'firebase/firestore';
 
 
@@ -40,7 +40,7 @@ export default function Home( {navigation}) {
     // setText(data);
     // setGoals((prevGoals) => {
     //   return [...prevGoals, newGoal]});
-    // setModalVisible(false); 
+    setModalVisible(false); 
   }
 
   function handleCancel() {
@@ -63,7 +63,7 @@ export default function Home( {navigation}) {
       "Are you sure you want to delete all goals?",
       [
         { text: "No", onPress: () => console.log("Cancel Pressed") },
-        { text: "Yes", onPress: () => setGoals([]) }
+        { text: "Yes", onPress: () => deleteAll('goals') },
       ]
     );
   }
