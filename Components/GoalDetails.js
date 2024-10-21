@@ -2,35 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import PressableButton from './PressableButton';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { updateWarningStatus } from '../Firebase/firestoreHelper';
 
 export default function GoalDetails({ route, navigation }) {
   const { goalItem, isMoreDetails } = route.params || {};
-  const [isWarning, setIsWarning] = useState(false);
+  const [isWarning, setIsWarning] = useState(goalItem?.warning || false);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <PressableButton
           componentStyle={styles.button}
-          pressHandler={() => setIsWarning(!isWarning)}
+          pressHandler={handleWarningToggle}
           pressedStyle={styles.buttonPressed}
         >
-          <AntDesign name="warning" size={16} color="black" />
+          <AntDesign name="warning" size={16} color={isWarning ? "red" : "black"} />
         </PressableButton>
-        // <Button
-        //   onPress={() => setIsWarning(!isWarning)}
-        //   title={isWarning ? "Reset" : "Warning"}
-        //   color={isWarning ? "red" : "black"}
-        // />
       ),
     });
-  }, [navigation, isWarning]);
+  }, [navigation, isWarning, goalItem]);
 
   useEffect(() => {
     navigation.setOptions({
       title: isWarning ? "Warning!" : (isMoreDetails ? "More details" : "Goal Details"),
     });
   }, [navigation, isWarning, isMoreDetails]);
+
+  async function handleWarningToggle() {
+    try {
+      const newWarningStatus = !isWarning;
+      await updateWarningStatus(goalItem.id, 'goals', newWarningStatus);
+      setIsWarning(newWarningStatus);
+    } catch (error) {
+      console.error("Failed to update warning status:", error);
+    }
+  }
 
   function handleMoreDetails() {
     navigation.push('GoalDetails', { 
