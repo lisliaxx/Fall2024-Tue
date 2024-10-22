@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, FlatList } from 'react-native'
 import React, { useEffect } from 'react'
 
 export default function GoalUsers() {
@@ -14,6 +14,11 @@ export default function GoalUsers() {
                 );
             }
             const data = await response.json();
+            setUsers(
+                data.map((user) => {
+                    return user.name;
+                }
+            ));
             consle.log(data);
         } catch (error) {
             console.log("fetch user data ", error);
@@ -24,9 +29,9 @@ export default function GoalUsers() {
 
   return (
     <View>
-      <Text>
-      
-</Text>
+        <FlatList 
+            data={users} 
+            renderItem={({item}) => <Text>{item}</Text>} />
     </View>
   )
 }
