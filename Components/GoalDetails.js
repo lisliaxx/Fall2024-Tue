@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Button } from 'react-native';
 import PressableButton from './PressableButton';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { updateWarningStatus } from '../Firebase/firestoreHelper';
+import GoalUsers from './GoalUsers';
 
 export default function GoalDetails({ route, navigation }) {
   const { goalItem, isMoreDetails } = route.params || {};
@@ -59,6 +60,7 @@ export default function GoalDetails({ route, navigation }) {
         <Text style={[styles.text, isWarning && styles.warningText]}>No goal details available</Text>
       )}
       {!isMoreDetails && <Button title="More Details" onPress={handleMoreDetails} />}
+      <GoalUsers id={goalItem.id} />
     </View>
   );
 }
