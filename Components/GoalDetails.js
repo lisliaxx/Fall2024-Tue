@@ -60,7 +60,7 @@ export default function GoalDetails({ route, navigation }) {
         <Text style={[styles.text, isWarning && styles.warningText]}>No goal details available</Text>
       )}
       {!isMoreDetails && <Button title="More Details" onPress={handleMoreDetails} />}
-      <GoalUsers />
+      <GoalUsers id={route.params.}/>
     </View>
   );
 }
