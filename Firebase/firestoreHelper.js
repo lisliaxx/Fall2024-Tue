@@ -15,6 +15,7 @@ export async function writeToDB(data, collectionName) {
 export async function deleteDocFromDB(docId, collectionName) {
     try {
         await deleteDoc(doc(database, collectionName, docId));
+        deleteAll(`goals/${id}/users`);
     }
     catch (err) {
         console.error("Error deleting document: ", err);
@@ -51,7 +52,6 @@ export async function getAllDocuments(collectionName){
     const data = [];
     querySnapshot.forEach((docSnap) => {
         data.pushdocSnap.data()});
-
     return data;
 } catch (err) {
     console.error("Error getting documents: ", err);
