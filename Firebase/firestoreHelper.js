@@ -3,6 +3,7 @@ import { database } from "./firebaseSetup";
 
 export async function writeToDB(data, collectionName) {
     try {
+        getAllDocuments(`goals/${id}/users`);
         const docRef = await addDoc(collection(database, collectionName),data);
         console.log("Document written with ID: ", docRef.id);
     }
@@ -42,4 +43,17 @@ export async function updateWarningStatus(docId, collectionName, isWarning) {
         console.error("Error updating warning status: ", err);
         throw err;
     }
+}
+
+export async function getAllDocuments(collectionName){
+    try{
+    const querySnapshot = await getDocs(collection(database, collectionName));
+    const data = [];
+    querySnapshot.forEach((docSnap) => {
+        data.pushdocSnap.data()});
+
+    return data;
+} catch (err) {
+    console.error("Error getting documents: ", err);
+}
 }

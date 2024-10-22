@@ -7,7 +7,17 @@ export default function GoalUsers(id) {
     useEffect(() => {
         async function fetchData() {
             try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/users/"
+                 const dataFromDB = await getAllDocuments(`goals/${id}/users`);
+                 if(dataFromDB.length){
+                    setUsers(
+                        dataFromDB.map((user) => {
+                        return user.name;
+                    }));
+                    return;
+                 }
+                 console.log("fetching data from API");
+        const response = await fetch(
+            "https://jsonplaceholder.typicode.com/users/"
             );
             if (!response.ok) {
                 throw new Error(
