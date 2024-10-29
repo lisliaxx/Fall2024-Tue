@@ -1,46 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import PressableButton from './PressableButton';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { updateWarningStatus } from '../Firebase/firestoreHelper';
-import GoalUsers from './GoalUsers';
+import { Button, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import PressableButton from "./PressableButton";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { updateDB } from "../Firebase/firestoreHelper";
+import GoalUsers from "./GoalUsers";
 
-export default function GoalDetails({ route, navigation }) {
-  const { goalItem, isMoreDetails } = route.params || {};
-  const [isWarning, setIsWarning] = useState(goalItem?.warning || false);
+export default function GoalDetails({ navigation, route }) {
+  const { goalItem } = route.params || {};
+  const [warning, setWarning] = useState(goalItem?.warning || false);
+
+  function warningHandler() {
+    setWarning(true);
+    navigation.setOptions({ title: "Warning!" });
+    if (goalItem?.id) {
+      updateDB(goalItem.id, { warning: true }, "goals");
+    }
+  }
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <PressableButton
-          componentStyle={styles.button}
-          pressHandler={handleWarningToggle}
-          pressedStyle={styles.buttonPressed}
+          pressedHandler={warningHandler}
+          componentStyle={{ backgroundColor: "purple" }}
+          pressedStyle={{ opacity: 0.5, backgroundColor: "purple" }}
         >
-          <AntDesign name="warning" size={16} color={isWarning ? "red" : "black"} />
+          <AntDesign 
+            name="warning" 
+            size={24} 
+            color={warning ? "red" : "white"} 
+          />
         </PressableButton>
       ),
     });
-  }, [navigation, isWarning, goalItem]);
+  }, [warning]);
 
-  useEffect(() => {
-    navigation.setOptions({
-      title: isWarning ? "Warning!" : (isMoreDetails ? "More details" : "Goal Details"),
-    });
-  }, [navigation, isWarning, isMoreDetails]);
-
-  async function handleWarningToggle() {
-    try {
-      const newWarningStatus = !isWarning;
-      await updateWarningStatus(goalItem.id, 'goals', newWarningStatus);
-      setIsWarning(newWarningStatus);
-    } catch (error) {
-      console.error("Failed to update warning status:", error);
-    }
-  }
-
-  function handleMoreDetails() {
-    navigation.push('GoalDetails', { 
+  function moreDetailsHandler() {
+    navigation.push("GoalDetails", {
       goalItem: { ...goalItem, text: "More details" },
       isMoreDetails: true
     });
@@ -48,19 +44,22 @@ export default function GoalDetails({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      {isMoreDetails ? (
-        <Text style={[styles.text, isWarning && styles.warningText]}>More details</Text>
-      ) : goalItem ? (
+      {goalItem ? (
         <View>
-          <Text style={[styles.title, isWarning && styles.warningText]}>Goal Details</Text>
-          <Text style={[styles.text, isWarning && styles.warningText]}>ID: {goalItem.id}</Text>
-          <Text style={[styles.text, isWarning && styles.warningText]}>Text: {goalItem.text}</Text>
+          <Text style={[styles.text, warning && styles.warningStyle]}>
+            This is details of a goal with text {goalItem.text} and id {goalItem.id}
+          </Text>
+          <Button 
+            title="More Details" 
+            onPress={moreDetailsHandler} 
+          />
+          {goalItem.id && <GoalUsers id={goalItem.id} />}
         </View>
       ) : (
-        <Text style={[styles.text, isWarning && styles.warningText]}>No goal details available</Text>
+        <Text style={[styles.text, warning && styles.warningStyle]}>
+          No goal details available
+        </Text>
       )}
-      {!isMoreDetails && <Button title="More Details" onPress={handleMoreDetails} />}
-      <GoalUsers id={goalItem.id} />
     </View>
   );
 }
@@ -69,19 +68,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+    backgroundColor: '#fff',
   },
   text: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 16,
+    marginBottom: 20,
   },
-  warningText: {
-    color: 'red',
+  warningStyle: {
+    color: "red",
   },
 });
