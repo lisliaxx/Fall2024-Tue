@@ -1,9 +1,40 @@
-import { View, Text, StyleSheet } from 'react-native';
-import React from 'react';
+import { View, Text, StyleSheet, Alert } from 'react-native';
+import React, { useLayoutEffect } from 'react';
 import { auth } from '../Firebase/firebaseSetup';
+import { signOut } from 'firebase/auth';
+import { AntDesign } from '@expo/vector-icons';
+import { Pressable } from 'react-native';
 
-export default function Profile() {
+export default function Profile({ navigation }) {
   const user = auth.currentUser;
+
+  async function handleSignOut() {
+    try {
+      await signOut(auth);
+      navigation.replace('Login');  
+    } catch (error) {
+      console.error("Error signing out: ", error);
+      Alert.alert('Error', 'Failed to sign out. Please try again.');
+    }
+  }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          onPress={handleSignOut}
+          style={({ pressed }) => [
+            {
+              opacity: pressed ? 0.5 : 1,
+              marginRight: 15,
+            }
+          ]}
+        >
+          <AntDesign name="logout" size={24} color="white" />
+        </Pressable>
+      ),
+    });
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
