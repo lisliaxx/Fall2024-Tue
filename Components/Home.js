@@ -1,13 +1,14 @@
 import { StatusBar } from "expo-status-bar";
-import {Button, SafeAreaView, ScrollView, StyleSheet, Text, View, FlatList, Alert,} from "react-native";
+import {Button, SafeAreaView, StyleSheet, Text, View, FlatList, Alert, Pressable} from "react-native";
 import Header from "./Header";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
 import { database } from "../Firebase/firebaseSetup";
 import { writeToDB, deleteFromDB, deleteAllFromDB} from "../Firebase/firestoreHelper";
 import { collection, onSnapshot } from "firebase/firestore";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function Home({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -59,6 +60,24 @@ export default function Home({ navigation }) {
       { text: "No", style: "cancel" },
     ]);
   }
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          onPress={() => navigation.navigate('Profile')}
+          style={({ pressed }) => [
+            {
+              opacity: pressed ? 0.5 : 1,
+              marginRight: 15,
+            }
+          ]}
+        >
+          <AntDesign name="user" size={24} color="white" />
+        </Pressable>
+      ),
+    });
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.container}>

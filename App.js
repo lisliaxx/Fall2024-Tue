@@ -7,6 +7,7 @@ import Home from './Components/Home';
 import GoalDetails from './Components/GoalDetails';
 import Login from './Components/Login';
 import Signup from './Components/Signup';
+import Profile from './Components/Profile';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 
@@ -23,6 +24,8 @@ const appStack =
 <>
   <Stack.Screen name="Home" component={Home} />
   <Stack.Screen name="GoalDetails" component={GoalDetails} />
+  <Stack.Screen name="Profile" component={Profile} />
+
 </>
 
 export default function App() {
