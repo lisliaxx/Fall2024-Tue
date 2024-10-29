@@ -1,9 +1,32 @@
 import { View, Text, TextInput, StyleSheet, Pressable } from 'react-native'
 import React, { useState } from 'react'
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const loginHandler = async () => {
+    if (email === '' || password === '') {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    const emailPattern = /\S+@\S+\.\S+/;
+    if (!emailPattern.test(email)) {
+        alert('Please enter a valid email address');
+        return;
+    }
+
+    const auth = getAuth();
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log('User logged in: ', user);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -26,7 +49,7 @@ export default function Login({ navigation }) {
         secureTextEntry
       />
 
-      <Pressable onPress={() => console.log('Login pressed')}>
+      <Pressable onPress={loginHandler}>
         <Text style={styles.loginButton}>Log In</Text>
       </Pressable>
 
