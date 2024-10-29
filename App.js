@@ -4,6 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from './Components/Home';
 import GoalDetails from './Components/GoalDetails';
+import Login from './Components/Login';
+import Signup from './Components/Signup';
 
 
 const Stack = createStackNavigator();
@@ -13,6 +15,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
+        initialRouteName="Login"
         screenOptions={{
           headerStyle: {
             backgroundColor: '#80d195',
@@ -22,6 +25,13 @@ export default function App() {
             fontWeight: 'bold',
           },
         }}>
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{
+            title: 'Login',
+          }}
+        />
         <Stack.Screen 
           name="Home" 
           component={Home} 
@@ -35,7 +45,14 @@ export default function App() {
           options={({route}) => ({
             title: route.params?.goalItem?.txt || "Goal Details",
           })}
-          />
+        />
+        <Stack.Screen
+          name="Signup"
+          component={Signup}
+          options={{
+            title: 'Signup',
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
