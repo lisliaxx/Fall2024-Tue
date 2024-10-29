@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { TextInput, StyleSheet, View, Text, Button, Modal, Alert, Image } from 'react-native';
 
-export default function Input({ autoFocus, inputHandler, modalVisible, cancelHandler }) {
+export default function Input({ autoFocus, inputHandler, modalVisible, dismissModal }) {
   const [text, setText] = useState('');
   const [isBlurred, setIsBlurred] = useState(false);
   const inputRef = useRef(null);
@@ -12,19 +12,19 @@ export default function Input({ autoFocus, inputHandler, modalVisible, cancelHan
     setText('');
   };
 
-  const handleCancel = () => {
-    Alert.alert(
-      'Cancel Input',
-      'Are you sure you want to cancel?',
-      [
-        { text: 'No', style: 'cancel' },
-        { text: 'Yes', onPress: ()  => {
-          cancelHandler();
-          setText('');
-        }},
-      ]
-    )
-  };
+  function handleCancel() {
+    // hide the modal
+    Alert.alert("Cancel", "Are you sure you want to cancel", [
+      { text: "cancel", style: "cancel" },
+      {
+        text: "ok",
+        onPress: () => {
+          setText("");
+          dismissModal();
+        },
+      },
+    ]);
+  }
 
 
   useEffect(() => {

@@ -20,6 +20,7 @@ export default function GoalItem({ goalObj, deleteHandler, separators }) {
     );
   }
 
+
   function handlePress() {
     navigation.navigate("GoalDetails", { goalItem: goalObj });
   }

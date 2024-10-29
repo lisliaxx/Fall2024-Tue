@@ -44,6 +44,10 @@ export default function Home({ navigation }) {
     deleteFromDB(deletedId, "goals");
   }
 
+  function dismissModal() {
+    setModalVisible(false);
+  }
+
   function deleteAll() {
     Alert.alert("Delete All", "Are you sure you want to delete all goals?", [
       {
