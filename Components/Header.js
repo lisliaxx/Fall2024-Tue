@@ -6,7 +6,7 @@ const windowHeight = Dimensions.get('window').height;
 
 export default function Header({ name }) {
   const { width, height } = useWindowDimensions();
-  console.log(`Window width: ${width}, height: ${height}`);
+  // console.log(`Window width: ${width}, height: ${height}`);
   return (
     <View>
       <Text style={styles.text}> Welcome to { name } </Text>
