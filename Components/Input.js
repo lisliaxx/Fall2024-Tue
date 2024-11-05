@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { TextInput, StyleSheet, View, Text, Button, Modal, Alert, Image } from 'react-native';
+import ImageManager from './ImageManager';
 
 export default function Input({ autoFocus, inputHandler, modalVisible, dismissModal }) {
   const [text, setText] = useState('');
@@ -11,7 +12,7 @@ export default function Input({ autoFocus, inputHandler, modalVisible, dismissMo
     inputHandler(text);
     setText('');
   };
-
+   
   function handleCancel() {
     // hide the modal
     Alert.alert("Cancel", "Are you sure you want to cancel", [
@@ -88,6 +89,7 @@ export default function Input({ autoFocus, inputHandler, modalVisible, dismissMo
             {text.length >= 3 ? 'Thank you' : 'Please type more than 3 characters'}
             </Text>
           )}
+          <ImageManager />
 
 
           <View style={styles.buttonContainer}>
