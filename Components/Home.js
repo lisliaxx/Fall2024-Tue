@@ -1,12 +1,22 @@
 import { StatusBar } from "expo-status-bar";
-import {Button, SafeAreaView, StyleSheet, Text, View, FlatList, Alert, Pressable} from "react-native";
+import {
+  Button, 
+  SafeAreaView, 
+  StyleSheet, 
+  Text, 
+  View, 
+  FlatList, 
+  Alert, 
+  Pressable,
+  Image
+} from "react-native";
 import Header from "./Header";
 import { useEffect, useState, useLayoutEffect } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
 import { auth, database } from "../Firebase/firebaseSetup";
-import { writeToDB, deleteFromDB, deleteAllFromDB} from "../Firebase/firestoreHelper";
+import { writeToDB, deleteFromDB, deleteAllFromDB } from "../Firebase/firestoreHelper";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
@@ -38,6 +48,7 @@ export default function Home({ navigation }) {
           );
         } else {
           Alert.alert("Error", "An unexpected error occurred.");
+          console.error("Firestore error:", error);
         }
       }
     );
@@ -50,16 +61,47 @@ export default function Home({ navigation }) {
     setModalVisible(true);
   };
 
-  function handleInputData(data) {
-    console.log("App.js ", data);
-    let newGoal = { text: data };
-    newGoal = { ...newGoal, owner: auth.currentUser.uid };
-    writeToDB(newGoal, "goals");
-    setModalVisible(false);
+  async function handleInputData(data) {
+    try {
+      console.log("App.js ", data);
+      let newGoal = { 
+        text: data.text,
+        imageUri: data.imageUri, // Include the image URI in the goal data
+        owner: auth.currentUser.uid,
+        createdAt: new Date().toISOString()
+      };
+      
+      await writeToDB(newGoal, "goals");
+      setModalVisible(false);
+    } catch (error) {
+      console.error("Error adding goal:", error);
+      Alert.alert("Error", "Failed to add goal. Please try again.");
+    }
   }
 
   function handleGoalDelete(deletedId) {
-    deleteFromDB(deletedId, "goals");
+    Alert.alert(
+      "Delete Goal",
+      "Are you sure you want to delete this goal?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          onPress: async () => {
+            try {
+              await deleteFromDB(deletedId, "goals");
+            } catch (error) {
+              console.error("Error deleting goal:", error);
+              Alert.alert("Error", "Failed to delete goal. Please try again.");
+            }
+          },
+          style: "destructive"
+        }
+      ]
+    );
   }
 
   function dismissModal() {
@@ -69,12 +111,21 @@ export default function Home({ navigation }) {
   function deleteAll() {
     Alert.alert("Delete All", "Are you sure you want to delete all goals?", [
       {
-        text: "Yes",
-        onPress: () => {
-          deleteAllFromDB("goals");
-        },
+        text: "Cancel",
+        style: "cancel"
       },
-      { text: "No", style: "cancel" },
+      {
+        text: "Delete All",
+        onPress: async () => {
+          try {
+            await deleteAllFromDB("goals");
+          } catch (error) {
+            console.error("Error deleting all goals:", error);
+            Alert.alert("Error", "Failed to delete all goals. Please try again.");
+          }
+        },
+        style: "destructive"
+      },
     ]);
   }
 
@@ -96,12 +147,28 @@ export default function Home({ navigation }) {
     });
   }, [navigation]);
 
+  const renderGoalItem = ({ item, separators }) => (
+    <View style={styles.goalContainer}>
+      <GoalItem
+        separators={separators}
+        deleteHandler={handleGoalDelete}
+        goalObj={item}
+      />
+      {item.imageUri && (
+        <Image
+          source={{ uri: item.imageUri }}
+          style={styles.goalImage}
+          resizeMode="cover"
+        />
+      )}
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
       <View style={styles.topView}>
         <Header name={appName} />
-        {/* PressableButton implementation */}
         <PressableButton
           pressedHandler={handleAddGoal}
           componentStyle={styles.addButton}
@@ -116,7 +183,7 @@ export default function Home({ navigation }) {
           autoFocus={true}
           inputHandler={handleInputData}
           modalVisible={modalVisible}
-          dismissModal={() => setModalVisible(false)}
+          dismissModal={dismissModal}
         />
       )}
 
@@ -140,18 +207,17 @@ export default function Home({ navigation }) {
           }
           ListFooterComponent={
             goals.length > 0 ? (
-              <Button title="Delete all" onPress={deleteAll} />
+              <Button 
+                title="Delete all" 
+                onPress={deleteAll}
+                color="red" 
+              />
             ) : null
           }
           contentContainerStyle={styles.scrollViewContainer}
           data={goals}
-          renderItem={({ item, separators }) => (
-            <GoalItem
-              separators={separators}
-              deleteHandler={handleGoalDelete}
-              goalObj={item}
-            />
-          )}
+          renderItem={renderGoalItem}
+          keyExtractor={(item) => item.id}
         />
       </View>
     </SafeAreaView>
@@ -211,8 +277,25 @@ const styles = StyleSheet.create({
     padding: 15,
     width: '100%',
   },
-  scrollView: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  goalContainer: {
+    width: '100%',
+    marginBottom: 15,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
+  goalImage: {
+    width: '100%',
+    height: 200,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  }
 });

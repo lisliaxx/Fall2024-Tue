@@ -2,14 +2,20 @@ import { StyleSheet, Text, Button, View, Image, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 
-export default function ImageManager() {
+export default function ImageManager({ onImageTaken }) { 
   const [permissionStatus, setPermissionStatus] = useState(null);
   const [imageUri, setImageUri] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getPermissions = async () => {
-      const response = await ImagePicker.requestCameraPermissionsAsync();
-      setPermissionStatus(response.status);
+      try {
+        const response = await ImagePicker.requestCameraPermissionsAsync();
+        setPermissionStatus(response.status);
+      } catch (error) {
+        console.error("Error requesting permissions:", error);
+        Alert.alert("Error", "Failed to request camera permissions");
+      }
     };
     getPermissions();
   }, []);
@@ -20,57 +26,76 @@ export default function ImageManager() {
         const response = await ImagePicker.requestCameraPermissionsAsync();
         setPermissionStatus(response.status);
         if (response.status !== "granted") {
-          console.log("Permission denied");
+          Alert.alert(
+            "Permission Required",
+            "You need to grant camera permissions to use this feature"
+          );
           return false;
         }
       }
-      console.log("Permission granted");
       return true;
-    } catch (err) {
-      console.log("Error verifying permissions ", err);
+    } catch (error) {
+      console.error("Error verifying permissions:", error);
+      Alert.alert("Error", "Failed to verify camera permissions");
       return false;
     }
   };
 
   const takeImageHandler = async () => {
-    const hasPermission = await verifyPermissions();
-    if (!hasPermission) {
-      Alert.alert("Permission denied", "You need to grant camera permissions to use this feature", [{ text: "Okay" }]);
-      return;
-    }
+    setIsLoading(true);
     try {
+      const hasPermission = await verifyPermissions();
+      if (!hasPermission) return;
+
       const result = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
+        quality: 0.8,
+        aspect: [4, 3],
       });
 
-      if (!result.canceled) {
-        const { assets } = result;
-        if (assets && assets.length > 0) {
-          setImageUri(assets[0].uri);
+      if (!result.canceled && result.assets?.[0]?.uri) {
+        const uri = result.assets[0].uri;
+        setImageUri(uri);
+        if (onImageTaken && typeof onImageTaken === 'function') {
+          onImageTaken(uri);
         }
       }
-    } catch (err) {
-      console.log("Error taking image ", err);
+    } catch (error) {
+      console.error("Error taking image:", error);
+      Alert.alert("Error", "Failed to take photo");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Button title="Take An Image" onPress={takeImageHandler} />
-      {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
+      <Button 
+        title={isLoading ? "Processing..." : "Take Photo"} 
+        onPress={takeImageHandler}
+        disabled={isLoading}
+      />
+      {imageUri && (
+        <Image 
+          source={{ uri: imageUri }} 
+          style={styles.image}
+          resizeMode="cover"
+        />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
   },
   image: {
     width: 200,
     height: 200,
     marginTop: 20,
+    borderRadius: 10,
   },
 });
