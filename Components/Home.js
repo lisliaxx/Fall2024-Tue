@@ -5,9 +5,9 @@ import { useEffect, useState, useLayoutEffect } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
-import { database } from "../Firebase/firebaseSetup";
+import { auth, database } from "../Firebase/firebaseSetup";
 import { writeToDB, deleteFromDB, deleteAllFromDB} from "../Firebase/firestoreHelper";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function Home({ navigation }) {
@@ -16,16 +16,32 @@ export default function Home({ navigation }) {
   const appName = "My app!";
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
+    const q = query(
       collection(database, "goals"),
+      where("owner", "==", auth.currentUser.uid)
+    );
+
+    const unsubscribe = onSnapshot(
+      q,
       (querySnapshot) => {
         let newArray = [];
         querySnapshot.forEach((docSnapshot) => {
           newArray.push({ ...docSnapshot.data(), id: docSnapshot.id });
         });
         setGoals(newArray);
+      },
+      (error) => {
+        if (error.code === "permission-denied") {
+          Alert.alert(
+            "Permission Error",
+            "You do not have permission to access this data."
+          );
+        } else {
+          Alert.alert("Error", "An unexpected error occurred.");
+        }
       }
     );
+
     return () => unsubscribe();
   }, []);
 
@@ -37,6 +53,7 @@ export default function Home({ navigation }) {
   function handleInputData(data) {
     console.log("App.js ", data);
     let newGoal = { text: data };
+    newGoal = { ...newGoal, owner: auth.currentUser.uid };
     writeToDB(newGoal, "goals");
     setModalVisible(false);
   }
