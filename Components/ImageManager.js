@@ -1,9 +1,10 @@
-import { StyleSheet, Text, Button, View, Alert } from "react-native";
+import { StyleSheet, Text, Button, View, Image, Alert } from "react-native";
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 
 export default function ImageManager() {
   const [permissionStatus, setPermissionStatus] = useState(null);
+  const [imageUri, setImageUri] = useState(null);
 
   useEffect(() => {
     const getPermissions = async () => {
@@ -41,17 +42,35 @@ export default function ImageManager() {
       const result = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
       });
-      console.log(result);
+
+      if (!result.canceled) {
+        const { assets } = result;
+        if (assets && assets.length > 0) {
+          setImageUri(assets[0].uri);
+        }
+      }
     } catch (err) {
       console.log("Error taking image ", err);
     }
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <Button title="Take An Image" onPress={takeImageHandler} />
+      {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  image: {
+    width: 200,
+    height: 200,
+    marginTop: 20,
+  },
+});
