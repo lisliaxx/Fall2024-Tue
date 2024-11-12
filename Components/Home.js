@@ -15,7 +15,8 @@ import { useEffect, useState, useLayoutEffect } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
-import { auth, database } from "../Firebase/firebaseSetup";
+import { auth, database, storage } from "../Firebase/firebaseSetup";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { writeToDB, deleteFromDB, deleteAllFromDB } from "../Firebase/firestoreHelper";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -61,12 +62,35 @@ export default function Home({ navigation }) {
     setModalVisible(true);
   };
 
+  async function fetchAndUploadImage(imageUri) {
+    try {
+      const response = await fetch(imageUri);
+      if (!response.ok) {
+        throw new Error("Failed to fetch image");
+      }
+      const blob = await response.blob();
+      const imageName = `${auth.currentUser.uid}_${Date.now()}.jpg`;
+      const imageRef = ref(storage, `goals/${imageName}`);
+      
+      await uploadBytesResumable(imageRef, blob);
+      const url = await getDownloadURL(imageRef);
+      return url;
+    } catch (error) {
+      console.error("Error fetching and uploading image:", error);
+      throw error;
+    }
+  }
+
   async function handleInputData(data) {
     try {
       console.log("App.js ", data);
+      let imageUrl = null;
+      if (data.imageUri) {
+        imageUrl = await fetchAndUploadImage(data.imageUri);
+      }
       let newGoal = { 
         text: data.text,
-        imageUri: data.imageUri, // Include the image URI in the goal data
+        imageUri: imageUrl,
         owner: auth.currentUser.uid,
         createdAt: new Date().toISOString()
       };
