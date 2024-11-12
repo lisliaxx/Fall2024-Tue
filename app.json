@@ -29,6 +29,12 @@
         {
           "cameraPermission": "The app needs access to your camera."
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationPermission": "The app needs access to your location."
+        }
       ]
     ]
   }

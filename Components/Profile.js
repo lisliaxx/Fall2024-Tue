@@ -4,8 +4,9 @@ import { auth } from '../Firebase/firebaseSetup';
 import { signOut } from 'firebase/auth';
 import { AntDesign } from '@expo/vector-icons';
 import { Pressable } from 'react-native';
+import LocationManager from './LocationManager';
 
-export default function Profile({ navigation }) {
+export default function Profile({ navigation, route }) {
   const user = auth.currentUser;
 
   async function handleSignOut() {
@@ -49,6 +50,8 @@ export default function Profile({ navigation }) {
         <Text style={styles.label}>User ID:</Text>
         <Text style={styles.info}>{user?.uid || 'Not available'}</Text>
       </View>
+      
+      <LocationManager navigation={navigation} route={route} />
     </View>
   );
 }
