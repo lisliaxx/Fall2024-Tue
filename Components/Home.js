@@ -11,7 +11,7 @@ import {
   Image
 } from "react-native";
 import Header from "./Header";
-import { useEffect, useState, useLayoutEffect } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
@@ -20,6 +20,42 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { writeToDB, deleteFromDB, deleteAllFromDB } from "../Firebase/firestoreHelper";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import AntDesign from "@expo/vector-icons/AntDesign";
+
+const GoalListItem = React.memo(({ item, separators, deleteHandler }) => {
+  const [imageUrl, setImageUrl] = useState(null);
+
+  useEffect(() => {
+    async function getImageUrl() {
+      if (item.imageUri) {
+        try {
+          const imageRef = ref(storage, item.imageUri);
+          const url = await getDownloadURL(imageRef);
+          setImageUrl(url);
+        } catch (error) {
+          console.error("Error getting image URL:", error);
+        }
+      }
+    }
+    getImageUrl();
+  }, [item.imageUri]);
+
+  return (
+    <View style={styles.goalContainer}>
+      <GoalItem
+        separators={separators}
+        deleteHandler={deleteHandler}
+        goalObj={item}
+      />
+      {imageUrl && (
+        <Image
+          source={{ uri: imageUrl }}
+          style={styles.goalImage}
+          resizeMode="cover"
+        />
+      )}
+    </View>
+  );
+});
 
 export default function Home({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -85,12 +121,22 @@ export default function Home({ navigation }) {
     try {
       console.log("App.js ", data);
       let imageUrl = null;
+      let storagePath = null;
+      
       if (data.imageUri) {
-        imageUrl = await fetchAndUploadImage(data.imageUri);
+        const imageName = `goals/${auth.currentUser.uid}_${Date.now()}.jpg`;
+        storagePath = imageName;
+        const imageRef = ref(storage, imageName);
+        
+        const response = await fetch(data.imageUri);
+        const blob = await response.blob();
+        await uploadBytesResumable(imageRef, blob);
+        imageUrl = await getDownloadURL(imageRef);
       }
+      
       let newGoal = { 
         text: data.text,
-        imageUri: imageUrl,
+        imageUri: storagePath,
         owner: auth.currentUser.uid,
         createdAt: new Date().toISOString()
       };
@@ -172,20 +218,11 @@ export default function Home({ navigation }) {
   }, [navigation]);
 
   const renderGoalItem = ({ item, separators }) => (
-    <View style={styles.goalContainer}>
-      <GoalItem
-        separators={separators}
-        deleteHandler={handleGoalDelete}
-        goalObj={item}
-      />
-      {item.imageUri && (
-        <Image
-          source={{ uri: item.imageUri }}
-          style={styles.goalImage}
-          resizeMode="cover"
-        />
-      )}
-    </View>
+    <GoalListItem 
+      item={item} 
+      separators={separators} 
+      deleteHandler={handleGoalDelete}
+    />
   );
 
   return (
