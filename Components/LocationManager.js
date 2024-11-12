@@ -3,7 +3,7 @@ import { Button, StyleSheet, Text, View, Alert, Image } from "react-native";
 import * as Location from 'expo-location';
 import { GOOGLE_MAPS_API_KEY } from '@env';
 
-export default function LocationManager() {
+export default function LocationManager({ navigation }) {
   const [location, setLocation] = useState(null);
 
   async function getLocation() {
@@ -48,6 +48,10 @@ export default function LocationManager() {
           <Text style={styles.coordinates}>
             Lat: {location.latitude.toFixed(4)}, Long: {location.longitude.toFixed(4)}
           </Text>
+          <Button 
+            title="Open Interactive Map"
+            onPress={() => navigation.navigate('Map', { location })}
+          />
         </View>
       )}
     </View>

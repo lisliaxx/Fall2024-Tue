@@ -50,7 +50,8 @@ export default function Profile({ navigation }) {
         <Text style={styles.label}>User ID:</Text>
         <Text style={styles.info}>{user?.uid || 'Not available'}</Text>
       </View>
-      <LocationManager />
+      
+      <LocationManager navigation={navigation} />
     </View>
   );
 }
