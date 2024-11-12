@@ -6,7 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Pressable } from 'react-native';
 import LocationManager from './LocationManager';
 
-export default function Profile({ navigation }) {
+export default function Profile({ navigation, route }) {
   const user = auth.currentUser;
 
   async function handleSignOut() {
@@ -51,7 +51,7 @@ export default function Profile({ navigation }) {
         <Text style={styles.info}>{user?.uid || 'Not available'}</Text>
       </View>
       
-      <LocationManager navigation={navigation} />
+      <LocationManager navigation={navigation} route={route} />
     </View>
   );
 }

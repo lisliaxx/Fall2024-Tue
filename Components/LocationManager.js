@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, View, Alert, Image } from "react-native";
 import * as Location from 'expo-location';
 import { GOOGLE_MAPS_API_KEY } from '@env';
 
-export default function LocationManager({ navigation }) {
+export default function LocationManager({ navigation, route }) {
   const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    if (route.params?.selectedLocation) {
+      setLocation(route.params.selectedLocation);
+    }
+  }, [route.params?.selectedLocation]);
 
   async function getLocation() {
     try {
@@ -52,6 +58,12 @@ export default function LocationManager({ navigation }) {
             title="Open Interactive Map"
             onPress={() => navigation.navigate('Map', { location })}
           />
+          {route.params?.selectedLocation && (
+            <Text style={styles.selectedLocation}>
+              Selected Location: {route.params.selectedLocation.latitude.toFixed(4)}, 
+              {route.params.selectedLocation.longitude.toFixed(4)}
+            </Text>
+          )}
         </View>
       )}
     </View>
@@ -77,5 +89,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: '#666',
+  },
+  selectedLocation: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
   }
 });
