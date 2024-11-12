@@ -4,6 +4,7 @@ import { auth } from '../Firebase/firebaseSetup';
 import { signOut } from 'firebase/auth';
 import { AntDesign } from '@expo/vector-icons';
 import { Pressable } from 'react-native';
+import LocationManager from './LocationManager';
 
 export default function Profile({ navigation }) {
   const user = auth.currentUser;
@@ -49,6 +50,7 @@ export default function Profile({ navigation }) {
         <Text style={styles.label}>User ID:</Text>
         <Text style={styles.info}>{user?.uid || 'Not available'}</Text>
       </View>
+      <LocationManager />
     </View>
   );
 }
