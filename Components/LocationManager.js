@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button, StyleSheet, Text, View, Alert, Image } from "react-native";
 import * as Location from 'expo-location';
-import { MAPS_API_KEY } from '@env';  
+import { GOOGLE_MAPS_API_KEY } from '@env';
+
 export default function LocationManager() {
   const [location, setLocation] = useState(null);
 
@@ -27,6 +28,12 @@ export default function LocationManager() {
       Alert.alert('Error', 'Failed to get location');
     }
   }
+
+  const getMapUrl = () => {
+    if (!location) return null;
+    
+    return `https://maps.googleapis.com/maps/api/staticmap?center=${location.latitude},${location.longitude}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${location.latitude},${location.longitude}&key=${GOOGLE_MAPS_API_KEY}`;
+  };
 
   return (
     <View style={styles.container}>
