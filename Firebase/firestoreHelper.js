@@ -54,3 +54,18 @@ import { database } from "./firebaseSetup";
       console.log("get all docs ", err);
     }
   }
+  
+  export async function saveUserLocation(userId, locationData) {
+    try {
+      await setDoc(
+        doc(database, "users", userId),
+        { location: locationData },
+        { merge: true }
+      );
+      console.log("Location saved successfully");
+      return true;
+    } catch (err) {
+      console.error("Error saving location:", err);
+      return false;
+    }
+  }
