@@ -20,12 +20,14 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { writeToDB, deleteFromDB, deleteAllFromDB } from "../Firebase/firestoreHelper";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import * as Notifications from 'expo-notifications';
 
 
 const GoalListItem = React.memo(({ item, separators, deleteHandler }) => {
   const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(() => {
+
     async function getPushToken() {
       const token = await Notifications.getExpoPushTokenAsync({
         projectId: "719b0d7-5fe1-4409-a8d1-12578c691035",
