@@ -1,4 +1,4 @@
-import {addDoc, collection, deleteDoc, doc, getDocs, setDoc,} from "firebase/firestore";
+import {addDoc, collection, deleteDoc, doc, getDoc, setDoc,} from "firebase/firestore";
 import { database } from "./firebaseSetup";
   
   export async function writeToDB(data, collectionName) {
@@ -67,5 +67,19 @@ import { database } from "./firebaseSetup";
     } catch (err) {
       console.error("Error saving location:", err);
       return false;
+    }
+  }
+
+  export async function getUserLocation(userId) {
+    try {
+      const docRef = await getDoc(doc(database, "users", userId));
+      const userData = docRef.data();
+      if (userData && userData.location) {
+        return userData.location;
+      }
+      return null;
+    } catch (err) {
+      console.error("Error getting user location:", err);
+      return null;
     }
   }

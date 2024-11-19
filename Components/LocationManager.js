@@ -2,13 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { Button, StyleSheet, Text, View, Alert, Image } from "react-native";
 import * as Location from 'expo-location';
 import { GOOGLE_MAPS_API_KEY } from '@env';
-import { saveUserLocation } from '../Firebase/firestoreHelper';
+import { saveUserLocation, getUserLocation } from '../Firebase/firestoreHelper';
 import { auth } from '../Firebase/firebaseSetup';
 
 export default function LocationManager({ navigation, route }) {
   const [location, setLocation] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Load saved location from Firestore
+  useEffect(() => {
+    async function loadSavedLocation() {
+      try {
+        const savedLocation = await getUserLocation(auth.currentUser.uid);
+        if (savedLocation) {
+          setLocation({
+            latitude: savedLocation.latitude,
+            longitude: savedLocation.longitude
+          });
+          console.log('Loaded saved location:', savedLocation);
+        }
+      } catch (error) {
+        console.error('Error loading saved location:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadSavedLocation();
+  }, []);
+
+  // Handle selected location from Map
   useEffect(() => {
     if (route.params?.selectedLocation) {
       setLocation(route.params.selectedLocation);
@@ -70,41 +94,48 @@ export default function LocationManager({ navigation, route }) {
       Alert.alert('Error', 'Failed to save location');
     } finally {
       setIsSaving(false);
+      navigation.navigate('Home');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Button title="Find My Location" onPress={getLocation} />
-      {location && (
-        <View style={styles.mapContainer}>
-          <Image
-            source={{ uri: getMapUrl() }}
-            style={styles.map}
-            resizeMode="cover"
-          />
-          <Text style={styles.coordinates}>
-            Lat: {location.latitude.toFixed(4)}, Long: {location.longitude.toFixed(4)}
-          </Text>
-          <View style={styles.buttonGroup}>
-            <Button 
-              title="Open Interactive Map"
-              onPress={() => navigation.navigate('Map', { location })}
-            />
-            <Button
-              title={isSaving ? "Saving..." : "Save Location"}
-              onPress={handleSaveLocation}
-              disabled={isSaving || !location}
-              color="green"
-            />
-          </View>
-          {route.params?.selectedLocation && (
-            <Text style={styles.selectedLocation}>
-              Selected Location: {route.params.selectedLocation.latitude.toFixed(4)}, 
-              {route.params.selectedLocation.longitude.toFixed(4)}
-            </Text>
+      {isLoading ? (
+        <Text style={styles.loadingText}>Loading saved location...</Text>
+      ) : (
+        <>
+          <Button title="Find My Location" onPress={getLocation} />
+          {location && (
+            <View style={styles.mapContainer}>
+              <Image
+                source={{ uri: getMapUrl() }}
+                style={styles.map}
+                resizeMode="cover"
+              />
+              <Text style={styles.coordinates}>
+                Lat: {location.latitude?.toFixed(4)}, Long: {location.longitude?.toFixed(4)}
+              </Text>
+              <View style={styles.buttonGroup}>
+                <Button 
+                  title="Open Interactive Map"
+                  onPress={() => navigation.navigate('Map', { location })}
+                />
+                <Button
+                  title={isSaving ? "Saving..." : "Save Location"}
+                  onPress={handleSaveLocation}
+                  disabled={isSaving || !location}
+                  color="green"
+                />
+              </View>
+              {route.params?.selectedLocation && (
+                <Text style={styles.selectedLocation}>
+                  Selected Location: {route.params.selectedLocation.latitude?.toFixed(4)}, 
+                  {route.params.selectedLocation.longitude?.toFixed(4)}
+                </Text>
+              )}
+            </View>
           )}
-        </View>
+        </>
       )}
     </View>
   );
@@ -142,5 +173,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     marginTop: 10,
     marginBottom: 10,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
   },
 });
