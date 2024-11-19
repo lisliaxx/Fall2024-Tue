@@ -5,9 +5,36 @@ import * as Notifications from 'expo-notifications';
 export default function NotificationManager() {
   const [isScheduling, setIsScheduling] = useState(false);
 
+  const verifyPermission = async () => {
+    try {
+      const permissionStatus = await Notifications.getPermissionsAsync();
+      
+      if (permissionStatus.granted) {
+        return true;
+      }
+
+      const requestedPermission = await Notifications.requestPermissionsAsync();
+      return requestedPermission.granted;
+      
+    } catch (error) {
+      console.error('Error verifying notification permission:', error);
+      return false;
+    }
+  };
+
   const scheduleNotificationHandler = async () => {
     setIsScheduling(true);
     try {
+      const permissionGranted = await verifyPermission();
+      
+      if (!permissionGranted) {
+        Alert.alert(
+          'Permission Required',
+          'You need to grant notification permissions to set reminders.'
+        );
+        return;
+      }
+
       const notificationId = await Notifications.scheduleNotificationAsync({
         content: {
           title: "Location Reminder",
