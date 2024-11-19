@@ -5,6 +5,7 @@ import { signOut } from 'firebase/auth';
 import { AntDesign } from '@expo/vector-icons';
 import { Pressable } from 'react-native';
 import LocationManager from './LocationManager';
+import NotificationManager from './NotificationManager';
 
 export default function Profile({ navigation, route }) {
   const user = auth.currentUser;
@@ -39,19 +40,25 @@ export default function Profile({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Profile Information</Text>
-      
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Email:</Text>
-        <Text style={styles.info}>{user?.email || 'Not available'}</Text>
+      <View>
+        <Text style={styles.title}>Profile Information</Text>
+        
+        <View style={styles.infoContainer}>
+          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.info}>{user?.email || 'Not available'}</Text>
+        </View>
+        
+        <View style={styles.infoContainer}>
+          <Text style={styles.label}>User ID:</Text>
+          <Text style={styles.info}>{user?.uid || 'Not available'}</Text>
+        </View>
       </View>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>User ID:</Text>
-        <Text style={styles.info}>{user?.uid || 'Not available'}</Text>
+      
+      <View style={styles.locationContainer}>
+        <LocationManager navigation={navigation} route={route} />
       </View>
       
-      <LocationManager navigation={navigation} route={route} />
+      <NotificationManager />
     </View>
   );
 }
@@ -65,14 +72,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 20,
     textAlign: 'center',
   },
   infoContainer: {
     backgroundColor: 'white',
     padding: 15,
     borderRadius: 5,
-    marginBottom: 15,
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: '#ddd',
   },
@@ -84,5 +91,9 @@ const styles = StyleSheet.create({
   info: {
     fontSize: 18,
     color: '#333',
-  }
+  },
+  locationContainer: {
+    flex: 1,
+    marginBottom: 10,
+  },
 });
