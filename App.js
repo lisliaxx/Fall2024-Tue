@@ -1,4 +1,4 @@
-import {View, Text, Button} from 'react-native';
+import {View, Text, Button, Alert} from 'react-native';
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
@@ -10,7 +10,16 @@ import Signup from './Components/Signup';
 import Profile from './Components/Profile';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Map from './Components/Map';
+import * as Notifications from 'expo-notifications';
 
+// Configure notifications first
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 const Stack = createNativeStackNavigator();
 // console.log(Stack);
@@ -50,6 +59,24 @@ export default function App() {
   });
   }
   , []);
+
+  useEffect(() => {
+    async function requestPermissions() {
+      try {
+        const { status } = await Notifications.requestPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert(
+            'Permission Required',
+            'Push notifications need to be enabled to set reminders'
+          );
+        }
+      } catch (error) {
+        console.error('Error requesting notification permissions:', error);
+      }
+    }
+
+    requestPermissions();
+  }, []);
 
   return (
     <NavigationContainer>
